@@ -1,0 +1,13 @@
+<?php
+
+namespace DummyNamespace;
+
+use App\Repositories\Repository;
+
+/**
+ * Class DummyClass.
+ */
+class DummyClass extends Repository
+{
+    //set your logic here
+}

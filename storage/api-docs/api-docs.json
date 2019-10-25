@@ -1,0 +1,523 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a documentation for PDBlog rest API",
+    "version": "1.0.0",
+    "title": "PDBlog REST API"
+  },
+  "host": "localhost:8000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Operations about user auth"
+    },
+    {
+      "name": "passwordReset",
+      "description": "Operations about user password reset"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Create user",
+        "description": "",
+        "operationId": "register",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "The user name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "The user email for login",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "The password",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password_confirmation",
+            "in": "formData",
+            "description": "The password confirmation",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UserDataResponse"
+            }
+          },
+          "422": {
+            "description": "Invalid field",
+            "schema": {
+              "$ref": "#/definitions/ApiErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logs user into the system",
+        "description": "",
+        "operationId": "login",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "email",
+            "description": "The user email for login",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "password",
+            "description": "The password for login in clear text",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UserDataResponse"
+            },
+            "headers": {
+              "X-Rate-Limit": {
+                "type": "integer",
+                "format": "int32",
+                "description": "calls per hour allowed by the user"
+              },
+              "X-Expires-After": {
+                "type": "string",
+                "format": "date-time",
+                "description": "date in UTC when token expires"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "example": {
+                "error": "invalid_credentials",
+                "message": "The user credentials were incorrect."
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid username/password supplied",
+            "schema": {
+              "$ref": "#/definitions/ApiErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logs out current logged in user session",
+        "description": "",
+        "operationId": "logout",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/password": {
+      "post": {
+        "tags": [
+          "passwordReset"
+        ],
+        "summary": "Create a element in the store with form data",
+        "description": "",
+        "operationId": "resetPasswordCreate",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "The user email for reset password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ApiSuccessSingleResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid Code supplied"
+          },
+          "422": {
+            "description": "Invalid field",
+            "schema": {
+              "$ref": "#/definitions/ApiErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/password/{token}": {
+      "get": {
+        "tags": [
+          "passwordReset"
+        ],
+        "summary": "Select single element",
+        "description": "",
+        "operationId": "passwordResetShow",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "token of password reset",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ApiSuccessSingleResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid Code supplied"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Invalid field",
+            "schema": {
+              "$ref": "#/definitions/ApiErrorResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "passwordReset"
+        ],
+        "summary": "Updates a user password with form data",
+        "description": "",
+        "operationId": "passwordResetUpdate",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Password reset token ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Update password",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PasswordResetUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UserDataResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid Code supplied"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Invalid field",
+            "schema": {
+              "$ref": "#/definitions/ApiErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "PasswordResetUser": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "password_confirmation": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "UserDataResponse": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        },
+        "token_type": {
+          "type": "string"
+        },
+        "expires_in": {
+          "type": "integer"
+        },
+        "remember_token": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "token_type": "Bearer",
+        "expires_in": 31622399,
+        "access_token": "string",
+        "refresh_token": "refresh token string",
+        "remember_token": "string"
+      }
+    },
+    "ApiSuccessMultiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "additionalData": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "code": 200,
+        "status": "success",
+        "data": [
+            {
+                "title": "article title",
+                "description": "article description",
+                "image": "/images/articles/2019/10/25/image.jpg"
+            },
+            {
+                "title": "article title2",
+                "description": "article description2",
+                "image": "/images/articles/2019/10/18/image.jpg"
+            }
+        ],
+        "message": "success"
+      }
+    },
+    "ApiSuccessSingleResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "additionalData": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "code": 200,
+        "status": "success",
+        "data": {
+            "title": "article title",
+            "description": "article description",
+            "image": "/images/articles/2019/10/25/image.jpg"
+        },
+        "additionalData": [],
+        "message": "success"
+      }
+    },
+    "ApiNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "code": 404,
+        "status": "error",
+        "data": "Resource Not Found",
+        "message": "Not Found"
+      }
+    },
+    "ApiUnauthResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "message": "Unauthenticated."
+      }
+    },
+    "ApiErrorResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "errors": {
+          "type": "object"
+        }
+      },
+      "example": {
+        "message": "The given data was invalid.",
+        "errors": {
+          "email": [
+            "The email must be a valid email address."
+          ]
+        }
+      }
+    },
+    "ApiFolderResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string"
+        },
+        "data": {
+        },
+        "additionalData": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "code": 200,
+        "message": "success",
+        "additionalData": [],
+        "data": {
+        }
+      }
+    }
+  }
+}
