@@ -1,3 +1,27 @@
+- Download Project
+- run composer install
+- run npm install
+- Connect to database
+- run php artisan migrate
+- run php artisan db:seed
+- run php artisan serve 
+- login in localhost:8000
+
+admin account is:
+    - user: admin@pdblog.com
+    - pass: password
+
+in storage api-docs has a json with api calls for postman
+
+in this project is use:
+- Laravel 6.2
+- Laravel Passport
+- Spatie permissions
+- Vue js 
+- Swagger (incomplete)
+- Postman (for test api because swagger not finished yet)
+
+
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 <p align="center">
