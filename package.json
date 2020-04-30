@@ -23,7 +23,7 @@
         "@websanova/vue-auth": "^2.21.14-beta",
         "bootstrap": "^4.3.1",
         "es6-promise": "^4.2.8",
-        "jquery": "^3.4.1",
+        "jquery": "^3.5.0",
         "popper.js": "^1.16.0",
         "vue": "^2.6.10",
         "vue-axios": "^2.1.5",
